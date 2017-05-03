@@ -1,8 +1,5 @@
 require_relative 'db_connection'
 require 'active_support/inflector'
-require 'byebug'
-# NB: the attr_accessor we wrote in phase 0 is NOT used in the rest
-# of this project. It was only a warm up.
 
 class SQLObject
   def self.columns
@@ -17,9 +14,7 @@ class SQLObject
 
   def self.finalize!
     self.columns.each do |column|
-      ## scope out here is class (Cat)
       define_method(column) do
-        ## scope in here is instance (tabby_cat)
         self.attributes[column]
       end
 
@@ -29,18 +24,16 @@ class SQLObject
     end
   end
 
-  #### add snake_case later vvv BP
-
   def self.table_name=(table_name)
     @table_name = table_name
   end
 
   def self.table_name
     @table_name = "#{self.to_s.downcase}s"
+    # @table_name || "#{self.to_s.tabelize}"
   end
 
   def self.all
-    # ...
     results = DBConnection.instance.execute(<<-SQL)
       SELECT
       #{self.table_name}.*
@@ -51,7 +44,6 @@ class SQLObject
   end
 
   def self.parse_all(results)
-    # ...
     parsed = []
     results.each do |result|
       parsed << self.new(result)
@@ -60,7 +52,6 @@ class SQLObject
   end
 
   def self.find(id)
-    # ...
     obj_params = DBConnection.execute(<<-SQL)
       SELECT
         "#{@table_name}".*
@@ -74,15 +65,13 @@ class SQLObject
   end
 
   def initialize(params = {})
-
     self.class.finalize!
     params.each do |key,val|
-      # debugger
-      unless self.class.columns.include?(key.to_sym)
+      if self.class.columns.include?(key.to_sym)
+        self.send("#{key}=", val)
+      else
         raise Exception.new("unknown attribute '#{key}'")
       end
-
-      self.send("#{key}=", val)
     end
   end
 
@@ -101,11 +90,11 @@ class SQLObject
   end
 
   def insert
-    col_names = self.class.columns.join(" , ")
-    question_marks_array = Array.new(attribute_values.length) {"?"}
-    question_marks = question_marks_array.join(" , ")
-    vals = attribute_values
-    # debugger
+    columns = self.class.columns.drop(1)
+    col_names = columns.map(&:to_s).join(', ')
+    question_marks_array = Array.new(columns.count) {"?"}
+    question_marks = question_marks_array.join(", ")
+    vals = attribute_values.drop(1)
     DBConnection.execute(<<-SQL, *vals)
     INSERT INTO
       #{self.class.table_name} (#{col_names})
@@ -113,14 +102,22 @@ class SQLObject
      (#{question_marks})
     SQL
 
-    
+    self.id = DBConnection.last_insert_row_id
   end
 
   def update
-    # ...
+    to_update = self.class.columns.drop(1).map {|attr| "#{attr}= ?"}.join(', ')
+    DBConnection.execute(<<-SQL, *attribute_values.drop(1), id)
+      UPDATE
+        #{self.class.table_name}
+      SET
+        #{to_update}
+      WHERE
+        #{self.class.table_name}.id = ?
+    SQL
   end
 
   def save
-    # ...
+    id.nil? ? insert : update 
   end
 end
