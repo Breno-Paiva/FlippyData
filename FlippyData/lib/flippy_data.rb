@@ -1,7 +1,21 @@
 require_relative 'db_connection'
 require 'active_support/inflector'
 
-class SQLObject
+class FlippyData
+
+  #creates setter and getter methods for each column,
+  #then sets param attributes
+  def initialize(params = {})
+    self.class.finalize!
+    params.each do |key,val|
+      if self.class.columns.include?(key.to_sym)
+        self.send("#{key}=", val)
+      else
+        raise Exception.new("unknown attribute '#{key}'")
+      end
+    end
+  end
+
   def self.columns
     @all_data ||= DBConnection.execute2(<<-SQL)
       SELECT
@@ -29,8 +43,7 @@ class SQLObject
   end
 
   def self.table_name
-    @table_name = "#{self.to_s.downcase}s"
-    # @table_name || "#{self.to_s.tabelize}"
+    @table_name || self.name.underscore.pluralize
   end
 
   def self.all
@@ -64,17 +77,6 @@ class SQLObject
     self.new(obj_params.first)
   end
 
-  def initialize(params = {})
-    self.class.finalize!
-    params.each do |key,val|
-      if self.class.columns.include?(key.to_sym)
-        self.send("#{key}=", val)
-      else
-        raise Exception.new("unknown attribute '#{key}'")
-      end
-    end
-  end
-
   def attributes
     @attributes ||= {}
     @attributes
@@ -86,7 +88,6 @@ class SQLObject
       values << self.send(column)
     end
     values
-    # debugger
   end
 
   def insert
@@ -95,6 +96,7 @@ class SQLObject
     question_marks_array = Array.new(columns.count) {"?"}
     question_marks = question_marks_array.join(", ")
     vals = attribute_values.drop(1)
+
     DBConnection.execute(<<-SQL, *vals)
     INSERT INTO
       #{self.class.table_name} (#{col_names})
@@ -118,6 +120,6 @@ class SQLObject
   end
 
   def save
-    id.nil? ? insert : update 
+    id.nil? ? insert : update
   end
 end

@@ -1,5 +1,5 @@
 require_relative 'db_connection'
-require_relative '01_sql_object'
+require_relative 'flippy_data'
 
 module Searchable
   def where(params)
@@ -17,6 +17,6 @@ module Searchable
   end
 end
 
-class SQLObject
+class FlippyData
   extend Searchable
 end
