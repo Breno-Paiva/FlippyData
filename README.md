@@ -13,17 +13,17 @@ Methods
 
 Classes that inherit from FlippyData will have the following methods available:
 
-*`::all` - returns an array of
-*`::columns` - returns an array of all column names
-*`::find` - search a single record by it's key
-*`::where` - search for recods that match a given parameter
+* `::all` - returns an array of
+* `::columns` - returns an array of all column names
+* `::find` - search a single record by it's key
+* `::where` - search for recods that match a given parameter
 
-*`#insert` - insert a new row into the class table
-*`#update` - update a row of this class table
-*`#save` - will call the method insert or update depending if class exists in table
+* `#insert` - insert a new row into the class table
+* `#update` - update a row of this class table
+* `#save` - will call the method insert or update depending if class exists in table
 
 you can also build table associations by using:
-*`::belongs_to`
-*`::has_many`
-*`::has_one_through`
-*`::has_many_through`
+* `::belongs_to`
+* `::has_many`
+* `::has_one_through`
+* `::has_many_through`
