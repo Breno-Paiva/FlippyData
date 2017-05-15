@@ -1,32 +1,32 @@
 CREATE TABLE songs (
   id INTEGER PRIMARY KEY,
   name VARCHAR(255) NOT NULL,
-  owner_id INTEGER,
+  album_id INTEGER,
 
-  FOREIGN KEY(album_id) REFERENCES album(id)
+  FOREIGN KEY(album_id) REFERENCES albums(id)
 );
 
-CREATE TABLE album (
+CREATE TABLE albums (
   id INTEGER PRIMARY KEY,
   title VARCHAR(255) NOT NULL,
   artist_id INTEGER,
 
-  FOREIGN KEY(artist_id) REFERENCES artist(id)
+  FOREIGN KEY(artist_id) REFERENCES artists(id)
 );
 
-CREATE TABLE artist (
+CREATE TABLE artists (
   id INTEGER PRIMARY KEY,
   name VARCHAR(255) NOT NULL
 );
 
 INSERT INTO
-  artist (id, name)
+  artists (id, name)
 VALUES
   (1, "Strokes"),
   (2, "Vulfpeck");
 
 INSERT INTO
-  album (id, title, artist_id)
+  albums (id, title, artist_id)
 VALUES
   (1, "Is this it", 1),
   (2, "Mit Peck", 2),
