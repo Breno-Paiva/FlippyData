@@ -1,12 +1,29 @@
 FlippyData
 ==========
 
-FlippyData is an ORM that connects classes to a database.  This allows you to access the database without writing long SQL queries everytime.  FlippyData is inpsired by the ActiveRecord class in Rails.
+FlippyData is an ORM that connects classes to a database.  This allows you to access the database without writing long SQL queries every time.  FlippyData is inspired by the ActiveRecord class in Rails.
 
 How To Use
 ----------
 
-To use FlippyData clone this repo and make your classes inherit from FlippyData.  A sample database is also provided in this repo.  To create or check associations just open up pry.
+1. Clone this repo.
+
+2. CD into the lib folder and open irb.
+
+3. Run the code: load 'flippy_data.rb'
+
+4. Now you can create classes that inherit from FlippyData and you can build associations amogst them
+
+
+Demo
+----
+If you would like to test FlippyData's functionality without creating your own database, you can use a sample one that has been provided.
+
+1. cd into the demo folder
+
+2. open irb and run the code : load 'demo.rb'
+
+3. fool around with the data
 
 Methods
 -------
