@@ -6,9 +6,9 @@ FlippyData is an ORM that connects classes to a database.  This allows you to ac
 How To Use
 ----------
 
-1. Clone this repo.
+1. Clone this repo
 
-2. CD into the lib folder and open irb.
+2. CD into the lib folder and open irb
 
 3. Run the code: load 'flippy_data.rb'
 
